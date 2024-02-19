@@ -2,7 +2,7 @@
 
 #### Trim, Repair, Align and Pileup modBam
 
-
+![logo](https://gitlab.lrz.de/beckerlab/nf-methtrap/-/blob/main/img/methTRAP_logo.png)
 
 From modBAm to methylBed
 
