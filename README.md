@@ -2,7 +2,7 @@
 
 #### Trim, Repair, Align and Pileup modBam
 
-
+<img align="right" src="img/methTRAP_logo.png" width="250px">
 
 From modBAm to methylBed
 
