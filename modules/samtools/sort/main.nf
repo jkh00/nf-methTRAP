@@ -4,7 +4,7 @@ process SAMTOOLS_SORT {
     tag "$meta"
     label 'process_medium'
     publishDir(
-        path: "${params.publishDir}/samtools/sort",
+        path: "${params.publishDir}/samtools/sort/aligned",
         mode: 'copy',
         saveAs: { fn -> fn.substring(fn.lastIndexOf('/')+1) }
     )
