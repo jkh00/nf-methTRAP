@@ -5,7 +5,7 @@ process PORECHOP {
     label 'process_medium'
     //publishDir "${params.out}", mode: 'copy', overwrite: false
     publishDir(
-        path:  "${params.publishDir}/porechop",
+        path:  "${params.publishDir}/trim_repair/porechop",
         mode: 'copy',
         saveAs: { fn -> fn.substring(fn.lastIndexOf('/')+1) },
     )

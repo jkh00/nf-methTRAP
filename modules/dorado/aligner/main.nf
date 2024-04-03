@@ -5,7 +5,7 @@ process DORADO_ALIGNER {
     label 'process_medium'
     //publishDir "${params.out}", mode: 'copy', overwrite: false
     publishDir(
-        path:  "${params.publishDir}/dorado/aligner",
+        path:  "${params.publishDir}/align/dorado/aligner",
         mode: 'copy',
         saveAs: { fn -> fn.substring(fn.lastIndexOf('/')+1) },
     )

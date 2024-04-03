@@ -1,13 +1,15 @@
 params.publishDir = './results'
 
 // preprocess beds (cuz its huge) > filter out reads with less than 5x coverage, select only 6mA and the three C contexts and the fractions of the methylation for each genomic position 
+// this output is customised for plotting whole genome methylation patterns (regardless of the genomic positions)
+// the output contained only 2 variables (methylated base + context, methylation rate)
 
 process FRAC_BED {
     tag "$meta"
     label 'process_medium'
     //publishDir "${params.out}", mode: 'copy', overwrite: false
     publishDir(
-        path: "${params.publishDir}/processed_bed/frac_bed",
+        path: "${params.publishDir}/processed_bed/methylation_freq",
         mode: 'copy',
         saveAs: { fn -> fn.substring(fn.lastIndexOf('/')+1) },
     )

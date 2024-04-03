@@ -5,7 +5,7 @@ process SAMTOOLS_IMPORT {
     label 'process_low'
     // publishDir "${params.out}", mode: 'copy', overwrite: false
     publishDir(
-        path:  "${params.publishDir}/dorado/aligner",
+        path:  "${params.publishDir}/trim_repair/samtools/import",
         mode: 'copy',
         saveAs: { fn -> fn.substring(fn.lastIndexOf('/')+1) },
     )

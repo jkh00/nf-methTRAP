@@ -6,7 +6,7 @@ process SAMTOOLS_FASTQ {
     label 'process_low'
     // publishDir "${params.out}", mode: 'copy', overwrite: false
     publishDir(
-        path:  "${params.publishDir}/samtools/fastq",
+        path:  "${params.publishDir}/trim_repair/samtools/fastq",
         mode: 'copy',
         saveAs: { fn -> fn.substring(fn.lastIndexOf('/')+1) },
     )
