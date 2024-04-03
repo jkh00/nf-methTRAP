@@ -4,7 +4,7 @@ process SAMTOOLS_INDEX {
     tag "$meta"
     label 'process_low'
     publishDir(
-        path: "${params.publishDir}/align/samtools/sort_index",
+        path: "${params.publishDir}/dorado/aligner",
         mode: 'copy',
         saveAs: { fn -> fn.substring(fn.lastIndexOf('/')+1) }
     )

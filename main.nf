@@ -1,4 +1,4 @@
-#!/usr/bin/env nextflow
+##!/usr/bin/env nextflow
 
 nextflow.enable.dsl = 2 
 params.publish_dir_mode = 'copy'

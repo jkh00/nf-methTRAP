@@ -25,8 +25,8 @@ Require inputs:
 8. sort algined modBam - `samtools sort`
 9. index aligned modBam -` samtools index`
 10. create bedMethyl - `modkit pileup`
-11. (optional) filter out reads < 5x coverage, retain only 2 columns for easier downstream analysis in R   
-12. (not yet, also optional) create bedgraph from the massive bedMethyl tables as input (with the right format) to MethylScore
+11. filter out reads < 5x coverage, retain only 2 columns ($4 - mod context, $11 - fraction of methylation) for easier downstream analysis in R   
+12. create bedgraph from the massive bedMethyl tables as input (chrom, pos1, pos2, mod_cov, canonical_cov) to MethylScore
 
 # Usage
 
