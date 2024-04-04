@@ -5,7 +5,7 @@ process DORADO_ALIGNER {
     label 'process_medium'
     //publishDir "${params.out}", mode: 'copy', overwrite: false
     publishDir(
-        path:  "${params.publishDir}/align/dorado/aligner",
+        path:  "${params.publishDir}/align/dorado/aligner/${meta}",
         mode: 'copy',
         saveAs: { fn -> fn.substring(fn.lastIndexOf('/')+1) },
     )
@@ -14,8 +14,11 @@ process DORADO_ALIGNER {
     tuple val(meta), path(reads), path(ref)
 
     output:
-    tuple val(meta), path("*.bam"), emit: bam
-    path "versions.yml"                , emit: versions
+    tuple val(meta), path("${meta}/*.bam"), emit: bam
+    tuple val(meta), path("${meta}/*.bai"), emit: bai
+    tuple val(meta), path("${meta}/*.txt"), emit: summary
+
+    path "versions.yml"       , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -27,7 +30,9 @@ process DORADO_ALIGNER {
         -t $task.cpus \\
         $ref \\
         $reads \\
-        > ${meta}_aligned.bam 
+        --emit-summary \\
+        --output-dir ${meta}
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         dorado: \$( dorado --version )

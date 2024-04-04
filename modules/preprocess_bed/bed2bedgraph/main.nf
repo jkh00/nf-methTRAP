@@ -49,7 +49,7 @@ process BED2BEDGRAPH {
             ;;
         esac
         echo "File Path: ${in_bed}"
-        awk -v strand=\$strand -v mod=\$mod 'BEGIN{OFS="\t"} ((\$4==mod) && (\$6==strand)) && (\$5 >= 5) && !(\$12 == 0 && \$13 == 0) {print \$1,\$2,\$3,\S11,\$12,\$13}' ${in_bed} > ${meta}_\${out_file}
+        awk -v strand=\$strand -v mod=\$mod 'BEGIN{OFS="\t"} ((\$4==mod) && (\$6==strand)) && (\$5 >= 5) && !(\$12 == 0 && \$13 == 0) {print \$1,\$2,\$3,\$11,\$12,\$13}' ${in_bed} > ${meta}_\${out_file}
       done
     done
     """

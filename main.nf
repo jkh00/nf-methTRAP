@@ -1,4 +1,4 @@
-##!/usr/bin/env nextflow
+#!/usr/bin/env nextflow
 
 nextflow.enable.dsl = 2 
 params.publish_dir_mode = 'copy'
@@ -108,13 +108,14 @@ workflow ALIGN {
   main:
 
   DORADO_ALIGNER(ch_dorado_in)
-  SAMTOOLS_FLAGSTAT(DORADO_ALIGNER.out.bam)
-  SAMTOOLS_SORT(DORADO_ALIGNER.out.bam)
-  SAMTOOLS_INDEX(SAMTOOLS_SORT.out.bam)
-  ch_pileup_in = SAMTOOLS_SORT.out.bam
-                 .join(SAMTOOLS_INDEX.out.bai)
-                 .join(refs)
+  bam_file = DORADO_ALIGNER.out.bam
+  bai_file = DORADO_ALIGNER.out.bai
+  SAMTOOLS_FLAGSTAT(bam_file)
   
+  ch_pileup_in = DORADO_ALIGNER.out.bam
+                .join(DORADO_ALIGNER.out.bai)
+                .join(refs)
+
   emit:
     ch_pileup_in
 
