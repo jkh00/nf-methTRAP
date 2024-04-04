@@ -70,3 +70,15 @@ sample,modBam,ref
 
 The outputs will be put into `params.out`, defaulting to `./results`. Inside the results folder, the outputs are structured into 4 main branches, `trim_repair`, `align`. `pileup` and `processed_bed` and in each sub directory, according to the different processors. 
 All processess will emit their outputs to results.
+
+# Dependencies 
+
+Required version of `nextflow` - v23.10.1 and `charliecloud` - v0.35
+
+currenty (April 2024) still have to pull containers prior to launching the pipeline, below is an example how to do this 
+
+```bash
+export CH_IMAGE_STORAGE=/path/to/work/charliecloud
+ch-image pull --auth gitlab.lrz.de:5005/beckerlab/container-playground/modkit:923af692
+unset CH_IMAGE_STORAGE 
+```
