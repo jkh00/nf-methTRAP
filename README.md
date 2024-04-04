@@ -68,5 +68,5 @@ sample,modBam,ref
 
 # Outputs
 
-The outputs will be put into `params.out`, defaulting to `./results`. Inside the results folder, the outputs are structured according to the different processors. 
+The outputs will be put into `params.out`, defaulting to `./results`. Inside the results folder, the outputs are structured into 4 main branches, `trim_repair`, `align`. `pileup` and `processed_bed` and in each sub directory, according to the different processors. 
 All processess will emit their outputs to results.
