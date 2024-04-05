@@ -20,13 +20,11 @@ Require inputs:
 3. convert modBam to fastq - `samtools fastq`
 4. trim barcode and adapters - `porechop`
 5. repair MM/ML tags of trimmed modBam - `modkit repair `
-6. align to reference - `dorado aligner` 
+6. align to reference (plus sorting and indexing) - `dorado aligner` 
 7. check statistics of alignment - `samtools flagstat`
-8. sort algined modBam - `samtools sort`
-9. index aligned modBam -` samtools index`
-10. create bedMethyl - `modkit pileup`
-11. filter out reads < 5x coverage, retain only 2 columns ($4 - mod context, $11 - fraction of methylation) for easier downstream analysis in R   
-12. create bedgraph from the massive bedMethyl tables as input (chrom, pos1, pos2, mod_cov, canonical_cov) to MethylScore
+8. create bedMethyl - `modkit pileup`
+9. create tables consists of methylation frequencies with >= 5x coverage (for plotting in R) - `frac_bed`
+10. create bedgraph from the massive bedMethyl tables as input (chrom, pos1, pos2,meth_perc, mod_cov, canonical_cov) to MethylScore - `bed2bedgraph`
 
 # Usage
 
@@ -82,3 +80,8 @@ export CH_IMAGE_STORAGE=/path/to/work/charliecloud
 ch-image pull --auth gitlab.lrz.de:5005/beckerlab/container-playground/modkit:923af692
 unset CH_IMAGE_STORAGE 
 ```
+
+Current version of `dorado` - v0.6.0
+
+Current version of `modkit` - v0.2.6
+
