@@ -22,7 +22,7 @@ Require inputs:
 5. convert trimmed modfastq to modBam - `samtools import`
 6. repair MM/ML tags of trimmed modBam - `modkit repair `
 7. align to reference (plus sorting and indexing) - `dorado aligner` 
-8. check statistics of alignment - `samtools flagstat`
+8. mapping summary - `samtools flagstat`
 9. create bedMethyl - `modkit pileup`
 10. create tables consists of methylation frequencies with >= 5x coverage (for plotting in R) - `frac_bed`
 11. create bedgraph from the massive bedMethyl tables as input (chrom, pos1, pos2,meth_perc, mod_cov, canonical_cov) to MethylScore - `bed2bedgraph`
@@ -147,7 +147,7 @@ table format:
 
 | column | name |
 | --- | --- |
-| 1   | modification, context
+| 1   | modification, context type
 | 2   | methylation percentage 
 
 
