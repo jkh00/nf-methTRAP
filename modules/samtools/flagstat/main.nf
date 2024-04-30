@@ -4,7 +4,7 @@ process SAMTOOLS_FLAGSTAT {
     tag "$meta"
     label 'process_single'
     publishDir(
-        path: "${params.publishDir}/align/samtools/flagstat",
+        path: "${params.publishDir}/align/samtools_flagstat",
         mode: 'copy',
         saveAs: { fn -> fn.substring(fn.lastIndexOf('/')+1) }
     )

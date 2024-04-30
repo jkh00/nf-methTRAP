@@ -5,7 +5,7 @@ process MODKIT_REPAIR {
     label 'process_medium'
     //publishDir "${params.out}", mode: 'copy', overwrite: false
     publishDir(
-        path: "${params.publishDir}/trim_repair/modkit/repair",
+        path: "${params.publishDir}/trim_repair/modkit_repair",
         mode: 'copy',
         saveAs: { fn -> fn.substring(fn.lastIndexOf('/')+1) },
     )

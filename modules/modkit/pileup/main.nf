@@ -5,7 +5,7 @@ process MODKIT_PILEUP {
     label 'process_high'
     //publishDir "${params.out}", mode: 'copy', overwrite: false
     publishDir(
-        path: "${params.publishDir}/pileup/modkit/pileup",
+        path: "${params.publishDir}/pileup",
         mode: 'copy',
         saveAs: { fn -> fn.substring(fn.lastIndexOf('/')+1) },
     )

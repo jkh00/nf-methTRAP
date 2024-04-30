@@ -38,10 +38,10 @@ process BED2BEDGRAPH {
       do
         case \$strand in 
           "+")
-            out_file=\${mod}_positive.bedgraph
+            out_file=\$(echo "\$mod" | sed 's/m,//' | sed 's/,0//')_positive.bedgraph
             ;;
           "-")
-            out_file=\${mod}_negative.bedgraph
+            out_file=\$(echo "\$mod" | sed 's/m,//' | sed 's/,0//')_negative.bedgraph
             ;;
           *)
             echo "> not a strand"
@@ -54,3 +54,9 @@ process BED2BEDGRAPH {
     done
     """
 }
+
+// can do something like this before the final `awk` to remove m,0, parts in the name - 
+//# Modify the output file name using parameter expansion
+//# Remove 'm,' and ',0' from the 'mod' part of the output file name
+//        out_file=\${out_file//m,}
+//        out_file=\${out_file//,0/}
