@@ -122,6 +122,33 @@ All processess will emit their outputs to results.
 
 ```
 
+## Output of `processed_bed`
+
+### 1. bed2bedgraph
+
+Convert bedMethyl tables to bedgraphs (compatible with mehtylScore), filter out positions with <5x coverage.
+
+bedgraph format: 
+
+| column | name |
+| --- | --- |
+| 1   | pos1
+| 2   | pos2
+| 3   | methylation percentage
+| 5   | modified base coverage
+| 6   | canonical base coverage
+
+### 2. frac_bed
+
+Convert bedMethyl tables to minimised tables which consist only of methylation frequencies, positions with <5x coverage are filtered out. 
+This table is later used to plot methylation frequencies in R.
+
+table format: 
+
+| column | name |
+| --- | --- |
+| 1   | modification, context
+| 2   | methylation percentage 
 
 
 # Dependencies 
@@ -136,7 +163,7 @@ ch-image pull --auth gitlab.lrz.de:5005/beckerlab/container-playground/modkit:92
 unset CH_IMAGE_STORAGE 
 ```
 
-Current version of `dorado` - v0.6.0
+Current version of `dorado` - v0.6.1
 
 Current version of `modkit` - v0.2.6
 
