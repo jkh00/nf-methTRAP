@@ -6,11 +6,11 @@
 
 From modBAm to methylBed
 
-This pipeline take modification basecalled ONT reads (modBam) as input, process the reads (including adapters & barcodes trimming, MM/ML tags repair), align trimmed repaired reads to assembly and then pileup to methylBed. 
+This pipeline take modification basecalled ONT reads (modBAM) as input, process the reads (including adapters & barcodes trimming, MM/ML tags repair), align trimmed repaired reads to assembly and then pileup to methylBed for methylation analyses. 
 
 Require inputs:
 
- * modBam 
+ * modBAM
  * reference genome for alignment 
 
 # Work flow
