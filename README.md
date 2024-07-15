@@ -4,7 +4,7 @@
 
 <img align="right" src="img/methTRAP_logo.png" width="250px">
 
-From modBAm to methylBed
+From modBAM to methylBed
 
 This pipeline take modification basecalled ONT reads (modBAM) as input, process the reads (including adapters & barcodes trimming, MM/ML tags repair), align trimmed repaired reads to assembly and then pileup to methylBed for methylation analyses. 
 
