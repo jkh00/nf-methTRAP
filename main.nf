@@ -4,6 +4,7 @@ nextflow.enable.dsl = 2
 params.publish_dir_mode = 'copy'
 params.samplesheet = true
 params.enable_conda = true
+params.no_trim = false
 params.out = './results'
 
 /*
@@ -148,6 +149,31 @@ workflow PROCESS_BED {
 }
 
 
-workflow {
+/* workflow {
   TRIM_REPAIR() | ALIGN | PILEUP | PROCESS_BED
+}*/
+
+
+workflow {
+
+
+    if (params.no_trim) {
+        // If skipping TRIM_REPAIR, process the samplesheet for direct input to ALIGN
+        if (params.samplesheet) {
+          ch_input = Channel.empty()
+            ch_input = Channel.fromPath(params.samplesheet)
+                              .splitCsv(header: true)
+            ch_input_modBam = ch_input.map(row -> [row.sample, file("${row.modBam}")])
+            refs = ch_input.map(row -> [row.sample, file("${row.ref}")])
+            ch_dorado_in = ch_input_modBam.join(refs)
+        } else {
+            exit 1, 'Input samplesheet not specified!'
+        }
+        ALIGN(ch_dorado_in, refs) | PILEUP | PROCESS_BED
+    } else {
+        // Run the full workflow starting with TRIM_REPAIR
+        TRIM_REPAIR() | ALIGN | PILEUP | PROCESS_BED
+    }
 }
+
+ 
