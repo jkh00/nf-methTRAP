@@ -1,11 +1,9 @@
-params.publishDir = './results'
-
 process PORECHOP {
     tag "$meta"
     label 'process_medium'
-    //publishDir "${params.out}", mode: 'copy', overwrite: false
+
     publishDir(
-        path:  "${params.publishDir}/trim_repair/porechop",
+        path:  "${params.outdir}/ont/trim/${meta}",
         mode: 'copy',
         saveAs: { fn -> fn.substring(fn.lastIndexOf('/')+1) },
     )
@@ -36,8 +34,8 @@ process PORECHOP {
         $args \\
         --no_split \\
         --format fastq.gz \\
-        -o porechop_${meta}.fastq.gz \\
-        > ${meta}.log
+        -o trimmed_${meta}.fastq.gz \\
+        > ${meta}_trimmed.log
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         porechop: \$( porechop --version )

@@ -1,19 +1,12 @@
-params.publishDir = './results'
-
 process SAMTOOLS_IMPORT {
     tag "$meta"
     label 'process_low'
     // publishDir "${params.out}", mode: 'copy', overwrite: false
     publishDir(
-        path:  "${params.publishDir}/trim_repair/porechop/convert2bam",
+        path:  "${params.outdir}/ont/trim/${meta}",
         mode: 'copy',
         saveAs: { fn -> fn.substring(fn.lastIndexOf('/')+1) },
     )
-
-    conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/samtools:1.19.2--h50ea8bc_0':
-        'biocontainers/samtools:1.19.2--h50ea8bc_0' }"
 
     input:
     tuple val(meta), path(reads)
@@ -37,7 +30,7 @@ process SAMTOOLS_IMPORT {
         $args \\
         -T '*' \\
         -@ $task.cpus \\
-        -o porechop_${prefix}.bam
+        -o trimmed_${prefix}.bam
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

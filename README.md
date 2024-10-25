@@ -1,31 +1,66 @@
 # nf-methTRAP
 
-#### Trim, Repair, Align and Pileup modBam
+This pipeline is primarily developed to extract methylation data from ONT reads. Recently we added support to process PacBio data too. 
+
+### Trim, Repair, Align and Pileup modBam
 
 <img align="right" src="img/methTRAP_logo.png" width="250px">
 
 From modBAM to methylBed
 
-This pipeline take modification basecalled ONT reads (modBAM) as input, process the reads (including adapters & barcodes trimming, MM/ML tags repair), align trimmed repaired reads to assembly and then pileup to methylBed for methylation analyses. 
+
+This pipeline takes modification basecalled ONT reads or PacBio HiFi reads predicted with 5mC (modBam) as input, align to assembly provided and then  extract methylation calls into .bed format. 
+
 
 Require inputs:
 
- * modBAM
+ * ONT/ PacBio modBAM
  * reference genome for alignment 
 
 # Work flow
 
-1. mod basecall - `dorado basecaller` (not included in this pipeline)
-2. sort modBam - `samtools sort`
-3. convert modBam to fastq - `samtools fastq`
-4. trim barcode and adapters - `porechop`
-5. convert trimmed modfastq to modBam - `samtools import`
-6. repair MM/ML tags of trimmed modBam - `modkit repair `
-7. align to reference (plus sorting and indexing) - `dorado aligner` 
-8. mapping summary - `samtools flagstat`
-9. create bedMethyl - `modkit pileup`
-10. create tables consists of methylation frequencies with >= 5x coverage (for plotting in R) - `frac_bed`
-11. create bedgraph from the massive bedMethyl tables as input (chrom, pos1, pos2,meth_perc, mod_cov, canonical_cov) to MethylScore - `bed2bedgraph`
+## ONT workflow: 
+
+1. trim and repair tags of input modBam (optional)
+
+    - trim and repair workflow:
+        1. sort modBam - `samtools sort`
+        2. convert modBam to fastq - `samtools fastq`
+        3. trim barcode and adapters - `porechop`
+        4. convert trimmed modfastq to modBam - `samtools import`
+        5. repair MM/ML tags of trimmed modBam - `modkit repair`
+
+2. align to reference (plus sorting and indexing) - `dorado aligner` 
+    - include alignment summary - `samtools flagstat`
+
+3. create bedMethyl - `modkit pileup`
+4. create bedgraphs (optional)
+
+
+## PacBio workflow: 
+
+1. align to reference - `minimap2` or `pbmm2` (default)
+
+    - minimap workflow: 
+        1. convert modBam to fastq - `samtools convert`
+        2. alignment - `minimap2`
+        3. sort and index - `samtools sort`
+        4. alignment summary - `samtools flagstat`
+
+    - pbmm2 workflow: 
+        1. alignment and sorting - `pbmm2`
+        2. index - `samtools index`
+        3. alignment summary - `samtools flagstat`
+
+2. create bedMethyl - `modkit pileup` (default) or `pb-CpG-tools` 
+    - pileup with `modkit pileup` is default setting
+    - 2 options for `pb-CpG-tools`:
+        1. default using `count` (no need to give any parameters)
+        2. or can set to using `model` (parameter settings check next section)
+
+
+3. create bedgraph (optional)
+
 
 # Usage
 
@@ -49,13 +84,18 @@ nextflow run nf-methTRAP --samplesheet 'path/to/sample_sheet.csv' \
 | --- | --- |
 | `--samplesheet` | Path to samplesheet |
 | `--out` | Results directory, default: `'./results'` |
+| `--no_trim` | skip trim |
+| `--aligner` | `minimap2`, default: pbmm2 |
+| `--pileup_method` | `pbcpgtools`, default: modkit |
+| `--model` | parse `--pileup-mode model` to pb-CpG-tools, default: `--pileup-mode count` |
+| `--bedgraph` | convert bed to bedgraph, compatible to methylScore input |
 
 # Samplesheet
 
 Samplesheet `.csv` with header:
 
 ```
-sample,modBam,ref
+sample,modBam,ref,method
 ```
 
 | Column | Content |
@@ -63,66 +103,58 @@ sample,modBam,ref
 | `sample` | Name of the sample |
 | `modBam` | Path to basecalled modBam file |
 | `ref` | Path to assembly fasta file |
+| `method` | specify ont / pacbio |
 
 
 # Outputs
 
-The outputs will be put into `params.out`, defaulting to `./results`. Inside the results folder, the outputs are structured into 4 main branches, `trim_repair`, `align`. `pileup` and `processed_bed` and in each sub directory, according to the different processors. 
-All processess will emit their outputs to results.
+The outputs will be put into `params.out`, defaulting to `./results`.
 
 ```bash
 
-├── trim_repair
+├── ont
 │   │
-│   ├── samtools
-│   │   ├── sort_inputBAM
-│   │   │   └── sorted_sample.bam
-│   │   └── convert2fastq 
-│   │       └── sample.fastq.gz
-│   │ 
-│   ├── porechop
-│   │   ├── sample.log
-│   │   ├── porechop_sample.fastq.gz
-│   │   └── convert2bam
-│   │       └── porechop_sample.bam
-│   │ 
-│   └── modkit_repair
-│       ├── sample_repaired.bam
-│       └── sample_repair.log
-│
-├── align
+│   ├── trim
+│   │   ├── trimmed.fastq.gz
+│   │   ├── trimmed.bam
+│   │   └── trimmed.log
 │   │
-│   ├── dorado_aligner
-│   │   └── sample
-│   │       ├── alignment_summary.txt
-│   │       ├── sample.bam
-│   │       └── sample.bam.bai
-│   │    
-│   └── samtools_flagstat
-│       └── sample.flagstat
-│
-├── pileup
+│   ├── repair
+│   │   ├── repaired.bam
+│   │   └── repaired.log
 │   │
-│   ├── sample.bed
-│   └── pileup.log
-│
-└── processed_bed
-    │ 
-    ├── bed2bedgraph
-    │   ├── sample_CG_negative.bedgraph
-    │   ├── sample_CG_positive.bedgraph
-    │   ├── sample_CHG_negative.bedgraph
-    │   ├── sample_CHG_positive.bedgraph
-    │   ├── sample_CHH_negative.bedgraph
-    │   └── sample_CHH_positive.bedgraph
+│   ├── alignment
+│   │   ├── aligned.bam
+│   │   ├── aligned.bai
+│   │   ├── summary.txt
+│   │   └── aligned.flagstat
+│   │
+│   ├── pileup/modkit
+│   │   ├── pileup.bed
+│   │   └── pileup.log
+│   │
+│   └── bedgraph
+│       └── bedgraphs
+│ 
+│  
+└── pacbio   
     │
-    └── methylation_freq
-        └── sample.txt
-
+    ├── aligned_minimap2/ aligned_pbmm2
+    │   ├── aligned.bam
+    │   ├── aligned.bai/csi
+    │   └── aligned.flagstat
+    │
+    ├── pileup: modkit/pb_cpg_tools
+    │   ├── pileup.bed
+    │   ├── pileup.log
+    │   └── pileup.bw (only pb_cpg_tools)
+    │
+    └── bedgraph
+        └── bedgraphs
 
 ```
 
-## Output of `processed_bed`
+## Output of `bedgraph`
 
 ### 1. bed2bedgraph
 
@@ -132,23 +164,14 @@ bedgraph format:
 
 | column | name |
 | --- | --- |
-| 1   | pos1
-| 2   | pos2
-| 3   | methylation percentage
+| 1   | chrom
+| 2   | pos1
+| 3   | pos2
+| 4   | methylation percentage
 | 5   | modified base coverage
 | 6   | canonical base coverage
 
-### 2. frac_bed
 
-Convert bedMethyl tables to minimised tables which consist only of methylation frequencies, positions with <5x coverage are filtered out. 
-This table is later used to plot methylation frequencies in R.
-
-table format: 
-
-| column | name |
-| --- | --- |
-| 1   | modification, context type
-| 2   | methylation percentage 
 
 
 # Dependencies 
@@ -163,7 +186,65 @@ ch-image pull --auth gitlab.lrz.de:5005/beckerlab/container-playground/modkit:92
 unset CH_IMAGE_STORAGE 
 ```
 
-Current version of `dorado` - v0.6.1
+Update (Oct 2024) 
 
-Current version of `modkit` - v0.2.6
+nextflow version: nextflow/24.09.0-edge-gcc12
 
+charliecloud version: charliecloud/0.37
+
+> only containers build in our playground need to be pulled prior to launching the pipeline
+
+Current version of `dorado` - v0.7.3
+
+Current version of `modkit` - v0.3.2
+
+
+
+Gone: 
+
+2. frac_bed
+
+Convert bedMethyl tables to minimised tables which consist only of methylation frequencies, positions with <5x coverage are filtered out. 
+This table is later used to plot methylation frequencies in R.
+
+table format: 
+
+| column | name |
+| --- | --- |
+| 1   | modification, context type
+| 2   | methylation percentage 
+
+
+test run with small dataset
+
+try all the combinations: 
+pacbio = 12n; ont = 4n 
+
+default: 
+
+
+| pacbio | parameters combinaition | test | 
+| --- | --- | --- |
+|  pbmm2 + modkit  | null |completed
+|  pbmm2 + modkit + bedgraph  |  --bedgraph | completed
+|  pbmm2 + pbcpg (count)  | --pileup_method pbcpgtools | completed
+|  pbmm2 + pbcpg (count) + bedgraph | --pileup_method pbcpgtools --bedgraph|  completed
+|  pbmm2 + pbcpg (model)  |  --pileup_method pbcpgtools --model | completed
+|  pbmm2 + pbcpg (model) + bedgraph | --pileup_method pbcpgtools --bedgraph --model | completed
+|  minimap2 + modkit | --aligner minimap2 | completed
+|  minimap2 + modkit + bedgraph  | --aligner minimap2 --bedgraph | completed
+|  minimap2 + pbcpg (count)  | --aligner minimap2 --pileup_method pbcpgtools |completed
+|  minimap2 + pbcpg (count) + bedgraph | --aligner minimap2 --pileup_method pbcpgtools --bedgraph | completed 
+|  minimap2 + pbcpg (model)  | --aligner minimap2 --pileup_method pbcpgtools --model | completed
+|  minimap2 + pbcpg (model) + bedgraph | --aligner minimap2 --pileup_method pbcpgtools --model --bedgraph | completed
+| all options (pbmm2 + modkit + bedgraph & pbmm2 + pbcpg (count) + bedgraph & minimap2 + modkit + bedgraph & minimap2 + pbcpg (count) + bedgraph) | --pb_all | completed
+
+
+
+
+| ont | parameters combinaition| test |
+| --- | --- | --- |
+|  trim + align   | null | completed
+|  trim + align + bedgraph | --bedgraph | completed 
+|  align + bedgraph  |  --no_trim --bedgraph | completed
+|  align | --no_trim | completed

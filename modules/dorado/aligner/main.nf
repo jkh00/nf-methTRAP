@@ -1,17 +1,15 @@
-params.publishDir = './results'
-
 process DORADO_ALIGNER {
     tag "$meta"
     label 'process_medium'
     //publishDir "${params.out}", mode: 'copy', overwrite: false
     publishDir(
-        path:  "${params.publishDir}/align/dorado_aligner/${meta}",
+        path:  "${params.outdir}/${method}/alignment/${meta}",
         mode: 'copy',
         saveAs: { fn -> fn.substring(fn.lastIndexOf('/')+1) },
     )
 
     input:
-    tuple val(meta), path(reads), path(ref)
+    tuple val(meta), path(reads), path(ref), val(method)
 
     output:
     tuple val(meta), path("${meta}/*.bam"), emit: bam

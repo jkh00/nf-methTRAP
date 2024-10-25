@@ -1,21 +1,14 @@
-params.publishDir = './results'
-
 process SAMTOOLS_FLAGSTAT {
     tag "$meta"
     label 'process_single'
     publishDir(
-        path: "${params.publishDir}/align/samtools_flagstat",
+        path: "${params.outdir}/${method}/${aligner}/${meta}",
         mode: 'copy',
         saveAs: { fn -> fn.substring(fn.lastIndexOf('/')+1) }
     )
 
-    conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/samtools:1.19.2--h50ea8bc_0' :
-        'biocontainers/samtools:1.19.2--h50ea8bc_0' }"
-
     input:
-    tuple val(meta), path(bam)
+    tuple val(meta), path(bam), val(method), val(aligner)
 
     output:
     tuple val(meta), path("*.flagstat"), emit: flagstat

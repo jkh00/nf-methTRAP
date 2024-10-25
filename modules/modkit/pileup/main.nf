@@ -1,17 +1,15 @@
-params.publishDir = './results'
-
 process MODKIT_PILEUP {
     tag "$meta"
     label 'process_high'
     //publishDir "${params.out}", mode: 'copy', overwrite: false
     publishDir(
-        path: "${params.publishDir}/pileup",
+        path: "${params.outdir}/${method}/pileup/modkit/${meta}",
         mode: 'copy',
         saveAs: { fn -> fn.substring(fn.lastIndexOf('/')+1) },
     )
 
     input:
-    tuple val(meta), path(in_bam), path(index), path(ref)
+    tuple val(meta), path(in_bam), path(index), path(ref), val(method)
 
     output:
     tuple val(meta), path("*.bed"), emit: bed
@@ -27,7 +25,6 @@ process MODKIT_PILEUP {
 
     """
     modkit pileup \\
-    --only-tabs \\
     -t $task.cpus \\
     --log-filepath ${meta}_pileup.log \\
     -r $ref \\

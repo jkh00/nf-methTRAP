@@ -9,13 +9,13 @@ process FRAC_BED {
     label 'process_medium'
     //publishDir "${params.out}", mode: 'copy', overwrite: false
     publishDir(
-        path: "${params.publishDir}/processed_bed/methylation_freq",
+        path: "${params.publishDir}/${method}/processed_bed/methylation_freq",
         mode: 'copy',
         saveAs: { fn -> fn.substring(fn.lastIndexOf('/')+1) },
     )
 
     input:
-    tuple val(meta), path(in_bed)
+    tuple val(meta), path(in_bed), val(method)
 
     output:
     tuple val(meta), path("*.txt"), emit: txt

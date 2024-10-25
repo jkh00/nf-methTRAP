@@ -1,5 +1,3 @@
-params.publishDir = './results'
-
 // preprocess beds (cuz its huge) > filter out reads with less than 5x coverage, select only 6mA and the three C contexts and the fractions of the methylation for each genomic position 
 // convert bed to bedgraphs, prepared as input to methylScore
 // split into strands (+/ -) and contexts (CG, CHG, CHH) specific 
@@ -8,18 +6,18 @@ params.publishDir = './results'
 // thats why is still important to remove out these calls, or else it gives problem when input to methylScore 
 
 
-process BED2BEDGRAPH {
+process PBMM_MODKIT_BEDGRAPH {
     tag "$meta"
     label 'process_medium'
     //publishDir "${params.out}", mode: 'copy', overwrite: false
     publishDir(
-        path: "${params.publishDir}/processed_bed/bed2bedgraph",
+        path: "${params.outdir}/${method}/bedgraph",
         mode: 'copy',
         saveAs: { fn -> fn.substring(fn.lastIndexOf('/')+1) },
     )
 
     input:
-    tuple val(meta), path(in_bed)
+    tuple val(meta), path(in_bed), val(method)
 
     output:
     tuple val(meta), path("*.bedgraph"), emit: bedgraph
@@ -34,14 +32,14 @@ process BED2BEDGRAPH {
 
     for strand in "+" "-"
     do
-      for mod in "m,CHH,0" "m,CHG,0" "m,CG,0"
+      for mod in "m,CHH,0" "m,CHG,0" "m,CG,0" "a,A,0"
       do
         case \$strand in 
           "+")
-            out_file=\$(echo "\$mod" | sed 's/m,//' | sed 's/,0//')_positive.bedgraph
+            out_file=\$(echo "\$mod" | sed 's/^[am],//' | sed 's/,0//')_positive.bedgraph
             ;;
           "-")
-            out_file=\$(echo "\$mod" | sed 's/m,//' | sed 's/,0//')_negative.bedgraph
+            out_file=\$(echo "\$mod" | sed 's/^[am],//' | sed 's/,0//')_negative.bedgraph
             ;;
           *)
             echo "> not a strand"
@@ -55,8 +53,3 @@ process BED2BEDGRAPH {
     """
 }
 
-// can do something like this before the final `awk` to remove m,0, parts in the name - 
-//# Modify the output file name using parameter expansion
-//# Remove 'm,' and ',0' from the 'mod' part of the output file name
-//        out_file=\${out_file//m,}
-//        out_file=\${out_file//,0/}

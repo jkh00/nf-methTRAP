@@ -1,11 +1,9 @@
-params.publishDir = './results'
-
 process MODKIT_REPAIR {
     tag "$meta"
     label 'process_medium'
     //publishDir "${params.out}", mode: 'copy', overwrite: false
     publishDir(
-        path: "${params.publishDir}/trim_repair/modkit_repair",
+        path: "${params.outdir}/ont/repair",
         mode: 'copy',
         saveAs: { fn -> fn.substring(fn.lastIndexOf('/')+1) },
     )

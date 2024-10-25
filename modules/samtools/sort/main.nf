@@ -1,22 +1,15 @@
-params.publishDir = './results'
-
 process SAMTOOLS_SORT {
     tag "$meta"
     label 'process_medium'
-    publishDir(
-        path: "${params.publishDir}/align/samtools/sort_index",
+   /* publishDir(
+        path: "${params.publishDir}/trim_repair/samtools/sort_inputBAM",
         mode: 'copy',
         saveAs: { fn -> fn.substring(fn.lastIndexOf('/')+1) }
     )
     // publishDir "${params.out}", mode: 'copy', overwrite: false
    //  publishDir ( path: "${this.process}".replace(':','/').toLowerCase(), mode: 'copy', saveAs: { fn -> fn.substring(fn.lastIndexOf('/')+1) })
    // publishDir ${task.process}.replace(':','/').toLowerCase(), mode: 'copy', saveAs: { fn -> fn.substring(fn.lastIndexOf('/')+1) }
-
-    conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/samtools:1.19.2--h50ea8bc_0' :
-        'biocontainers/samtools:1.19.2--h50ea8bc_0' }"
-
+*/
     input:
     tuple val(meta), path(bam)
 
@@ -35,6 +28,7 @@ process SAMTOOLS_SORT {
     """
     samtools sort \\
         $args \\
+        -n \\
         -@ $task.cpus \\
         -o sorted_${bam.baseName}.bam \\
         -T $prefix \\

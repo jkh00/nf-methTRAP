@@ -1,19 +1,11 @@
-params.publishDir = './results'
-
 process SAMTOOLS_INDEX {
     tag "$meta"
     label 'process_low'
     publishDir(
-        path: "${params.publishDir}/align/samtools/sort_index",
+        path: "${params.outdir}/pacbio/aligned_pbmm2/${meta}",
         mode: 'copy',
         saveAs: { fn -> fn.substring(fn.lastIndexOf('/')+1) }
     )
-
-
-    conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/samtools:1.19.2--h50ea8bc_0' :
-        'biocontainers/samtools:1.19.2--h50ea8bc_0' }"
 
     input:
     tuple val(meta), path(input)
