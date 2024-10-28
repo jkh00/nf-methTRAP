@@ -24,8 +24,7 @@ process PBMM2 {
 
     pbmm2 align \\
         --sort --preset HiFi \\
-        -j ${task.cpus / 2} -J ${task.cpus / 2} \\
-        $ref $reads > ${meta}_pacbio_aligned.bam 
+        $ref $reads ${meta}_pacbio_aligned.bam 
 
 
 
