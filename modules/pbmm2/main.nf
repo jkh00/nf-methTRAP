@@ -24,7 +24,7 @@ process PBMM2 {
 
     pbmm2 align \\
         --sort --preset HiFi \\
-        $ref $reads > ${meta}_pacbio_aligned.bam 
+        $ref $reads ${meta}_pacbio_aligned.bam 
 
 
 

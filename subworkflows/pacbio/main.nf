@@ -44,7 +44,6 @@ workflow PACBIO {
       input | MAP_PBMM2 | MODK_PILEUP | PBMM_MODKIT_BEDGRAPH
       input | MAP_PBMM2 | CPG_PILEUP | PBMM_PBCPG_BEDGRAPHS
 
-
   } else {
 
     if (params.aligner == "minimap2" && params.pileup_method == "pbcpgtools") {
