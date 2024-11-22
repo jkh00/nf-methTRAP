@@ -19,6 +19,9 @@ Require inputs:
 
 # Work flow
 
+![alt text](methTRAP_pipeline_fig-2.png)
+
+
 ## ONT workflow: 
 
 1. trim and repair tags of input modBam (optional)
