@@ -9,7 +9,7 @@ This pipeline is primarily developed to extract methylation data from ONT reads.
 From modBAM to methylBed
 
 
-This pipeline takes modification basecalled ONT reads or PacBio HiFi reads predicted with 5mC (modBam) as input, align to assembly provided and then  extract methylation calls into .bed format. 
+This pipeline takes modification basecalled ONT reads or PacBio HiFi reads predicted with 5mC (modBam) as input, align to assembly provided and then extract methylation calls into bed/ bedgraph format. 
 
 
 Require inputs:
