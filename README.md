@@ -172,6 +172,13 @@ bedgraph format:
 | 6   | canonical base coverage
 
 
+# Changes to be made 
+
+1. default pacbio pileup tool -> pbcpgtool (model)
+2. document which parameters & versions used for some tools 
+    - minimap 
+    - pileup settings (modkit & pbcpgtools)
+
 
 
 # Dependencies 
@@ -248,3 +255,12 @@ default:
 |  trim + align + bedgraph | --bedgraph | completed 
 |  align + bedgraph  |  --no_trim --bedgraph | completed
 |  align | --no_trim | completed
+
+
+### Updates 
+
+31.10.24
+
+update `modkit pileup` 
+- use `--combine-mod` command, which combined cytosine mods (mC and hmC) counts as one 
+    - reasoning behind this is cuz for current analyses we are not interested in hmC, so will just buckled them all in one 
