@@ -61,6 +61,7 @@ Require inputs:
     - 2 options for `pb-CpG-tools`:
         1. default using `count` (no need to give any parameters)
         2. or can set to using `model` (parameter settings check next section)
+        3. prior to pileup, aligned reads are split based on F/R strands 
 
 
 3. create bedgraph (optional)
