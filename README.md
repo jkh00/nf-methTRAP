@@ -19,7 +19,7 @@ Require inputs:
 
 # Work flow
 
-<img width="924" alt="image" src="https://github.com/user-attachments/assets/e3885c9c-057a-44eb-8855-fe80598ecbde" />
+<img width="924" alt="image" src="img/methtrap_workflow.png" />
 
 
 
