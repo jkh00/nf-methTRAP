@@ -26,6 +26,7 @@ process MODKIT_PILEUP {
     """
     modkit pileup \\
     -t $task.cpus \\
+    --combine-mods \\
     --log-filepath ${meta}_pileup.log \\
     -r $ref \\
     --motif A 0 --motif CHH 0 --motif CHG 0 --motif CG 0 \\

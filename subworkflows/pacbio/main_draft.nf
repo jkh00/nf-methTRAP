@@ -23,7 +23,7 @@ include { MAP_MINI } from './minimap2/main'
 include { MODK_PILEUP } from './modkit_pile/main'
 include { CPG_PILEUP } from './pbcpgtools/main'
 include { MAP_PBMM2 } from './pbmm2/main'
-include { SPLIT_STRAND } from './split_strand/main'
+
 
 /*
  ===========================================
@@ -48,16 +48,16 @@ workflow PACBIO {
 
     if (params.aligner == "minimap2" && params.pileup_method == "pbcpgtools") {
       if (params.bedgraph) {
-        input | MAP_MINI | SPLIT_STRAND | CPG_PILEUP | PBCPG_BEDGRAPHS
+        input | MAP_MINI | CPG_PILEUP | PBCPG_BEDGRAPHS
       } else {
-        input | MAP_MINI | SPLIT_STRAND | CPG_PILEUP
+        input | MAP_MINI | CPG_PILEUP
       }
     } else if (!params.aligner && params.pileup_method == "pbcpgtools") {
 
       if (params.bedgraph) {
-          input | MAP_PBMM2 | SPLIT_STRAND | CPG_PILEUP | PBCPG_BEDGRAPHS
+          input | MAP_PBMM2 | CPG_PILEUP | PBCPG_BEDGRAPHS
         } else {
-          input | MAP_PBMM2 | SPLIT_STRAND | CPG_PILEUP
+          input | MAP_PBMM2 | CPG_PILEUP
         }
     } else if (params.aligner == "minimap2" && !params.pileup_method) {
       

@@ -11,7 +11,7 @@ process MINI_MODKIT_BEDGRAPH {
     label 'process_medium'
     //publishDir "${params.out}", mode: 'copy', overwrite: false
     publishDir(
-        path: "${params.outdir}/${method}/bedgraph",
+        path: "${params.outdir}/${method}/bedgraph/minimap2/modkit",
         mode: 'copy',
         saveAs: { fn -> fn.substring(fn.lastIndexOf('/')+1) },
     )
@@ -32,14 +32,14 @@ process MINI_MODKIT_BEDGRAPH {
 
     for strand in "+" "-"
     do
-      for mod in "m,CHH,0" "m,CHG,0" "m,CG,0" "a,A,0"
+      for mod in "C,CHH,0" "C,CHG,0" "C,CG,0" "A,A,0"
       do
         case \$strand in 
           "+")
-            out_file=\$(echo "\$mod" | sed 's/^[am],//' | sed 's/,0//')_positive.bedgraph
+            out_file=\$(echo "\$mod" | sed 's/^[AC],//' | sed 's/,0//')_positive.bedgraph
             ;;
           "-")
-            out_file=\$(echo "\$mod" | sed 's/^[am],//' | sed 's/,0//')_negative.bedgraph
+            out_file=\$(echo "\$mod" | sed 's/^[AC],//' | sed 's/,0//')_negative.bedgraph
             ;;
           *)
             echo "> not a strand"
@@ -47,7 +47,7 @@ process MINI_MODKIT_BEDGRAPH {
             ;;
         esac
         echo "File Path: ${in_bed}"
-        awk -v strand=\$strand -v mod=\$mod 'BEGIN{OFS="\t"} ((\$4==mod) && (\$6==strand)) && (\$5 >= 5) && !(\$12 == 0 && \$13 == 0) {print \$1,\$2,\$3,\$11,\$12,\$13}' ${in_bed} > ${meta}_\${out_file}
+        awk -v strand=\$strand -v mod=\$mod 'BEGIN{OFS="\t"} ((\$4==mod) && (\$6==strand)) && (\$5 >= 5) {print \$1,\$2,\$3,\$11,\$12,\$13}' ${in_bed} > ${meta}_\${out_file}
       done
     done
     """

@@ -12,7 +12,8 @@ process PB_CPG_TOOLS {
 
 
     output:
-    tuple val(meta), path("*.bed"), emit: bed
+    tuple val(meta), path("*hap1.bed"), emit: forwardbed
+    tuple val(meta), path("*hap2.bed"), emit: reversebed
     tuple val(meta), path("*.bw"), emit: bw
     tuple val(meta), path("*.log"), emit: log
     path "versions.yml"       , emit: versions

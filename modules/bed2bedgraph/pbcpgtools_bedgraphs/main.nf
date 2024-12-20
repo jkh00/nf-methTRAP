@@ -8,7 +8,7 @@ process PBCPG_BEDGRAPHS {
     )
 
     input:
-    tuple val(meta), path(in_bed), val(method)
+    tuple val(meta), path(forwardbed), path(reversebed), val(method)
 
     output:
     tuple val(meta), path("*.bedgraph"), emit: bedgraph
@@ -21,7 +21,10 @@ process PBCPG_BEDGRAPHS {
     """
     set -eu
 
-    awk -F'\\t' '\$6 >= 5 {print \$1,\$2,\$3,\$4,\$7,\$8}' ${in_bed} > ${meta}_CG.bedgraph
+    awk 'BEGIN {OFS="\\t"} {print \$1, \$2, \$3, \$4, \$6}' ${forwardbed} > ${meta}.model.forward.bedgraph
+    awk 'BEGIN {OFS="\\t"} {print \$1, \$2+1, \$3+1, \$4, \$6}' ${reversebed} > ${meta}.model.reverse.bedgraph
+
+    cat ${meta}.model.forward.bedgraph ${meta}.model.reverse.bedgraph > ${meta}_CG_model.merged.bedgraph
     
     """
 }

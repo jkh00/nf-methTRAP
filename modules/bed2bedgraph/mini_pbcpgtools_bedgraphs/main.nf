@@ -4,7 +4,7 @@ process MINI_PBCPG_BEDGRAPHS {
     label 'process_medium'
     //publishDir "${params.out}", mode: 'copy', overwrite: false
     publishDir(
-        path: "${params.outdir}/${method}/bedgraph",
+        path: "${params.outdir}/${method}/bedgraph/minimap2/pbcpg",
         mode: 'copy',
         saveAs: { fn -> fn.substring(fn.lastIndexOf('/')+1) },
     )
