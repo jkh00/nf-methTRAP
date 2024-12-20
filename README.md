@@ -185,10 +185,4 @@ bedgraph format:
     - pileup settings (modkit & pbcpgtools)
 
 
-### Updates 
 
-31.10.24
-
-update `modkit pileup` 
-- use `--combine-mod` command, which combined cytosine mods (mC and hmC) counts as one 
-    - reasoning behind this is cuz for current analyses we are not interested in hmC, so will just buckled them all in one 
